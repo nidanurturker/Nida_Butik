@@ -1,6 +1,7 @@
 package org.example.nidabutik.service;
 
 import org.example.nidabutik.dto.SupplierRequest;
+import org.example.nidabutik.dto.SupplierResponse;
 import org.example.nidabutik.entity.Supplier;
 import org.example.nidabutik.exception.BusinessRuleException;
 import org.example.nidabutik.exception.ResourceNotFoundException;
@@ -19,26 +20,26 @@ public class SupplierService {
         this.supplierRepository = supplierRepository;
     }
 
-    public List<Supplier> getAllSuppliers() {
-        return supplierRepository.findAll();
+    public List<SupplierResponse> getAllSuppliers() {
+        return supplierRepository.findAll().stream().map(this::toResponse).toList();
     }
 
-    public Supplier getSupplier(Long id) {
-        return findSupplier(id);
+    public SupplierResponse getSupplier(Long id) {
+        return toResponse(findSupplier(id));
     }
 
     @Transactional
-    public Supplier createSupplier(SupplierRequest request) {
+    public SupplierResponse createSupplier(SupplierRequest request) {
         if (supplierRepository.existsByEmailIgnoreCase(request.email())) {
             throw new BusinessRuleException("Bu tedarikci e-postasi zaten kullaniliyor.");
         }
         Supplier supplier = new Supplier();
         applyRequest(supplier, request);
-        return supplierRepository.save(supplier);
+        return toResponse(supplierRepository.save(supplier));
     }
 
     @Transactional
-    public Supplier updateSupplier(Long id, SupplierRequest request) {
+    public SupplierResponse updateSupplier(Long id, SupplierRequest request) {
         Supplier supplier = findSupplier(id);
         supplierRepository.findByEmailIgnoreCase(request.email()).ifPresent(existing -> {
             if (!existing.getId().equals(id)) {
@@ -46,7 +47,7 @@ public class SupplierService {
             }
         });
         applyRequest(supplier, request);
-        return supplierRepository.save(supplier);
+        return toResponse(supplierRepository.save(supplier));
     }
 
     @Transactional
@@ -63,5 +64,15 @@ public class SupplierService {
         supplier.setEmail(request.email());
         supplier.setPhone(request.phone());
         supplier.setCity(request.city());
+    }
+
+    private SupplierResponse toResponse(Supplier supplier) {
+        return new SupplierResponse(
+                supplier.getId(),
+                supplier.getName(),
+                supplier.getEmail(),
+                supplier.getPhone(),
+                supplier.getCity()
+        );
     }
 }

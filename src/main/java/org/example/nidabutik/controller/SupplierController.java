@@ -2,10 +2,18 @@ package org.example.nidabutik.controller;
 
 import jakarta.validation.Valid;
 import org.example.nidabutik.dto.SupplierRequest;
-import org.example.nidabutik.entity.Supplier;
+import org.example.nidabutik.dto.SupplierResponse;
 import org.example.nidabutik.service.SupplierService;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -19,23 +27,23 @@ public class SupplierController {
     }
 
     @GetMapping
-    public List<Supplier> getAllSuppliers() {
+    public List<SupplierResponse> getAllSuppliers() {
         return supplierService.getAllSuppliers();
     }
 
     @GetMapping("/{id}")
-    public Supplier getSupplier(@PathVariable Long id) {
+    public SupplierResponse getSupplier(@PathVariable Long id) {
         return supplierService.getSupplier(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Supplier createSupplier(@Valid @RequestBody SupplierRequest request) {
+    public SupplierResponse createSupplier(@Valid @RequestBody SupplierRequest request) {
         return supplierService.createSupplier(request);
     }
 
     @PutMapping("/{id}")
-    public Supplier updateSupplier(@PathVariable Long id, @Valid @RequestBody SupplierRequest request) {
+    public SupplierResponse updateSupplier(@PathVariable Long id, @Valid @RequestBody SupplierRequest request) {
         return supplierService.updateSupplier(id, request);
     }
 

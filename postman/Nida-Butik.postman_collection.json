@@ -1,0 +1,435 @@
+{
+  "info": {
+    "_postman_id": "d6c6f4f1-3e2d-4e3d-9c2d-8c6e7f8d9a11",
+    "name": "Nida Butik API",
+    "description": "Nida Butik Spring Boot backend collection for boutique products, customers, suppliers, orders and payments.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "Get All Products",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Basic {{userAuth}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/products"
+          }
+        },
+        {
+          "name": "Filter Products",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Basic {{userAuth}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/products/filter?minPrice=1000&maxPrice=4000&model=Elbise&brand=Zara%20Studio",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "products",
+                "filter"
+              ],
+              "query": [
+                {
+                  "key": "minPrice",
+                  "value": "1000"
+                },
+                {
+                  "key": "maxPrice",
+                  "value": "4000"
+                },
+                {
+                  "key": "model",
+                  "value": "Elbise"
+                },
+                {
+                  "key": "brand",
+                  "value": "Zara Studio"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Product By Id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Basic {{userAuth}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/products/1"
+          }
+        },
+        {
+          "name": "Create Product",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Basic {{adminAuth}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"İpek Dokulu Midi Elbise\",\n  \"model\": \"ZR-2001\",\n  \"material\": \"ipek karışımı\",\n  \"price\": 2899.90,\n  \"stockQuantity\": 8,\n  \"imageUrl\": \"/images/zara/00387075250-p.jpg\",\n  \"categoryId\": 1,\n  \"brandId\": 1,\n  \"supplierId\": 1\n}"
+            },
+            "url": "{{baseUrl}}/api/products"
+          }
+        },
+        {
+          "name": "Update Product",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Basic {{adminAuth}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"İpek Dokulu Midi Elbise\",\n  \"model\": \"ZR-2001\",\n  \"material\": \"ipek karışımı\",\n  \"price\": 2999.90,\n  \"stockQuantity\": 6,\n  \"imageUrl\": \"/images/zara/00387075250-p.jpg\",\n  \"categoryId\": 1,\n  \"brandId\": 1,\n  \"supplierId\": 1\n}"
+            },
+            "url": "{{baseUrl}}/api/products/1"
+          }
+        },
+        {
+          "name": "Delete Product",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Basic {{adminAuth}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/products/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Customers",
+      "item": [
+        {
+          "name": "Get All Customers",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Basic {{userAuth}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/customers"
+          }
+        },
+        {
+          "name": "Top Buyers Female",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Basic {{userAuth}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/customers/top-buyers?gender=FEMALE"
+          }
+        },
+        {
+          "name": "Get Customer By Id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Basic {{userAuth}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/customers/1"
+          }
+        },
+        {
+          "name": "Create Customer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Basic {{adminAuth}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Ece\",\n  \"lastName\": \"Aydın\",\n  \"email\": \"ece@example.com\",\n  \"phone\": \"+905551112288\",\n  \"gender\": \"FEMALE\",\n  \"address\": \"Nişantaşı Caddesi No:7\",\n  \"city\": \"İstanbul\"\n}"
+            },
+            "url": "{{baseUrl}}/api/customers"
+          }
+        },
+        {
+          "name": "Update Customer",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Basic {{adminAuth}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Ece\",\n  \"lastName\": \"Aydın\",\n  \"email\": \"ece.updated@example.com\",\n  \"phone\": \"+905551112288\",\n  \"gender\": \"FEMALE\",\n  \"address\": \"Nişantaşı Caddesi No:7\",\n  \"city\": \"İstanbul\"\n}"
+            },
+            "url": "{{baseUrl}}/api/customers/1"
+          }
+        },
+        {
+          "name": "Delete Customer",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Basic {{adminAuth}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/customers/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Suppliers",
+      "item": [
+        {
+          "name": "Get All Suppliers",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Basic {{userAuth}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/suppliers"
+          }
+        },
+        {
+          "name": "Create Supplier",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Basic {{adminAuth}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Atelier Tedarik\",\n  \"email\": \"atelier@example.com\",\n  \"phone\": \"+902121112244\",\n  \"city\": \"İstanbul\"\n}"
+            },
+            "url": "{{baseUrl}}/api/suppliers"
+          }
+        },
+        {
+          "name": "Update Supplier",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Basic {{adminAuth}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Atelier Tedarik\",\n  \"email\": \"atelier.updated@example.com\",\n  \"phone\": \"+902121112244\",\n  \"city\": \"İstanbul\"\n}"
+            },
+            "url": "{{baseUrl}}/api/suppliers/1"
+          }
+        },
+        {
+          "name": "Delete Supplier",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Basic {{adminAuth}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/suppliers/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Orders",
+      "item": [
+        {
+          "name": "Get All Orders",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Basic {{userAuth}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/orders"
+          }
+        },
+        {
+          "name": "Get Order By Id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Basic {{userAuth}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/orders/1"
+          }
+        },
+        {
+          "name": "Create Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Basic {{adminAuth}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": 1,\n  \"items\": [\n    {\n      \"productId\": 1,\n      \"quantity\": 1\n    },\n    {\n      \"productId\": 2,\n      \"quantity\": 1\n    }\n  ]\n}"
+            },
+            "url": "{{baseUrl}}/api/orders"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Payments",
+      "item": [
+        {
+          "name": "Get All Payments",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Basic {{userAuth}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/payments"
+          }
+        },
+        {
+          "name": "Create Payment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Basic {{adminAuth}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderId\": 1,\n  \"method\": \"CREDIT_CARD\",\n  \"transactionCode\": \"TXN-2026-0001\"\n}"
+            },
+            "url": "{{baseUrl}}/api/payments"
+          }
+        },
+        {
+          "name": "Rollback Demo",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Basic {{adminAuth}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderId\": 1,\n  \"method\": \"CREDIT_CARD\",\n  \"transactionCode\": \"TXN-ROLLBACK-0001\"\n}"
+            },
+            "url": "{{baseUrl}}/api/payments/rollback-demo"
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "userAuth",
+      "value": "dXNlcjoxMjM0"
+    },
+    {
+      "key": "adminAuth",
+      "value": "YWRtaW46YWRtaW4xMjM="
+    }
+  ]
+}

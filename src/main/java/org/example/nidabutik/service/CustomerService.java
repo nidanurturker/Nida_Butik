@@ -2,6 +2,7 @@ package org.example.nidabutik.service;
 
 import org.example.nidabutik.dto.CustomerPurchaseSummary;
 import org.example.nidabutik.dto.CustomerRequest;
+import org.example.nidabutik.dto.CustomerResponse;
 import org.example.nidabutik.entity.Customer;
 import org.example.nidabutik.entity.Gender;
 import org.example.nidabutik.exception.BusinessRuleException;
@@ -25,12 +26,12 @@ public class CustomerService {
         this.orderRepository = orderRepository;
     }
 
-    public List<Customer> getAllCustomers() {
-        return customerRepository.findAll();
+    public List<CustomerResponse> getAllCustomers() {
+        return customerRepository.findAll().stream().map(this::toResponse).toList();
     }
 
-    public Customer getCustomer(Long id) {
-        return findCustomer(id);
+    public CustomerResponse getCustomer(Long id) {
+        return toResponse(findCustomer(id));
     }
 
     public List<CustomerPurchaseSummary> getTopEightCustomersByGender(Gender gender) {
@@ -38,17 +39,17 @@ public class CustomerService {
     }
 
     @Transactional
-    public Customer createCustomer(CustomerRequest request) {
+    public CustomerResponse createCustomer(CustomerRequest request) {
         if (customerRepository.existsByEmailIgnoreCase(request.email())) {
             throw new BusinessRuleException("Bu e-posta ile kayitli musteri var.");
         }
         Customer customer = new Customer();
         applyRequest(customer, request);
-        return customerRepository.save(customer);
+        return toResponse(customerRepository.save(customer));
     }
 
     @Transactional
-    public Customer updateCustomer(Long id, CustomerRequest request) {
+    public CustomerResponse updateCustomer(Long id, CustomerRequest request) {
         Customer customer = findCustomer(id);
         customerRepository.findByEmailIgnoreCase(request.email()).ifPresent(existing -> {
             if (!existing.getId().equals(id)) {
@@ -56,7 +57,7 @@ public class CustomerService {
             }
         });
         applyRequest(customer, request);
-        return customerRepository.save(customer);
+        return toResponse(customerRepository.save(customer));
     }
 
     @Transactional
@@ -76,5 +77,19 @@ public class CustomerService {
         customer.setGender(request.gender());
         customer.setAddress(request.address());
         customer.setCity(request.city());
+    }
+
+    private CustomerResponse toResponse(Customer customer) {
+        return new CustomerResponse(
+                customer.getId(),
+                customer.getFirstName(),
+                customer.getLastName(),
+                customer.getEmail(),
+                customer.getPhone(),
+                customer.getGender(),
+                customer.getAddress(),
+                customer.getCity(),
+                customer.getCreatedAt()
+        );
     }
 }
