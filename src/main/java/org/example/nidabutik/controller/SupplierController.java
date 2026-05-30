@@ -5,6 +5,7 @@ import org.example.nidabutik.dto.SupplierRequest;
 import org.example.nidabutik.dto.SupplierResponse;
 import org.example.nidabutik.service.SupplierService;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,28 +28,33 @@ public class SupplierController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public List<SupplierResponse> getAllSuppliers() {
         return supplierService.getAllSuppliers();
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public SupplierResponse getSupplier(@PathVariable Long id) {
         return supplierService.getSupplier(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasRole('ADMIN')")
     public SupplierResponse createSupplier(@Valid @RequestBody SupplierRequest request) {
         return supplierService.createSupplier(request);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public SupplierResponse updateSupplier(@PathVariable Long id, @Valid @RequestBody SupplierRequest request) {
         return supplierService.updateSupplier(id, request);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteSupplier(@PathVariable Long id) {
         supplierService.deleteSupplier(id);
     }

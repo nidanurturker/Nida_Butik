@@ -1,8 +1,8 @@
 # Nida Butik
 
-Nida Butik is a Spring Boot backend for a boutique jewelry and womens fashion shop. It uses PostgreSQL, JPA, DTOs, validation, Spring Security RBAC, transaction management, and a Shopify-style static storefront.
+Nida Butik, takı ve kadın giyim odaklı bir butik satış sitesi için hazırlanmış Spring Boot tabanlı backend projesidir. Projede PostgreSQL, JPA, DTO, validation, Spring Security ile RBAC, transaction yönetimi ve Shopify tarzı bir statik vitrin yer alır.
 
-## Tech Stack
+## Kullanılan Teknolojiler
 
 - Java 17
 - Spring Boot 4.0.6
@@ -13,21 +13,21 @@ Nida Butik is a Spring Boot backend for a boutique jewelry and womens fashion sh
 - PostgreSQL
 - Docker Compose
 - Maven Wrapper
-- H2 for tests
+- Testler için H2
 
-## Architecture
+## Mimari Yapı
 
-- `entity`: database models
-- `repository`: CRUD and derived queries
-- `service`: business rules and transactions
-- `controller`: HTTP endpoints
-- `dto`: request and response objects
-- `exception`: centralized error handling
-- `config`: security and bootstrap data
+- `entity`: veritabanı tablolarını temsil eden modeller
+- `repository`: CRUD işlemleri ve derived query metotları
+- `service`: iş kuralları ve transaction yönetimi
+- `controller`: HTTP endpoint’leri
+- `dto`: request ve response nesneleri
+- `exception`: merkezi hata yönetimi
+- `config`: güvenlik ve başlangıç verileri
 
-## Database Design
+## Veritabanı Tasarımı
 
-The schema follows 3NF principles and includes:
+Şema 3NF kurallarına uygun olacak şekilde modellenmiştir ve şu tabloları içerir:
 
 - `customers`
 - `products`
@@ -38,61 +38,71 @@ The schema follows 3NF principles and includes:
 - `order_items`
 - `payments`
 
-`products` references `brands`, `categories`, and `suppliers`. `orders` and `order_items` represent the sales flow. `payments` is linked one-to-one with an order.
+`products` tablosu marka, kategori ve tedarikçi tablolarına bağlıdır. `orders` ve `order_items` satış akışını yönetir. `payments` tablosu sipariş ile bire bir ilişkilidir.
 
-## Design Guide
+## Tasarım Yönergesi
 
-The frontend styling follows the rules in [`shopify.com-DESIGN.md`](./shopify.com-DESIGN.md).
+Ön yüz tasarımında [`shopify.com-DESIGN.md`](./shopify.com-DESIGN.md) dosyasındaki yönergeler esas alınmıştır.
 
-## Requirements Covered
+## Karşılanan Gereksinimler
 
-- Entity, repository, service, controller packages are present.
-- DTO and validation annotations are used on request payloads.
-- Global exception handling is implemented in `exception`.
-- Derived query methods are used in repository interfaces.
-- Spring Security RBAC is enabled with `USER` and `ADMIN` roles.
-- Payment flow is wrapped in transactional service methods with rollback behavior.
-- Static product imagery is bundled under `src/main/resources/static/images`.
+- `entity`, `repository`, `service`, `controller` paketleri mevcut.
+- Request verileri için DTO ve validation kullanıldı.
+- Merkezi exception yönetimi uygulandı.
+- Repository katmanında derived query metotları yazıldı.
+- Spring Security ile `USER` ve `ADMIN` rolleri tanımlandı.
+- Ödeme akışı transaction ve rollback ile yönetildi.
+- Statik vitrin görselleri `src/main/resources/static/images` altında yer alıyor.
 
-## Run With Docker
+## Güvenlik
 
-Start PostgreSQL:
+- SQL injection riski azaltmak için JPA repository yapısı ve parametreli sorgular kullanıldı.
+- XSS riskini azaltmak için statik vitrinde kullanıcıya basılan veriler DOM üzerinde güvenli şekilde işlendi.
+- CSRF, stateless HTTP Basic API tasarımı ve kapalı CSRF filtresi ile devre dışı bırakıldı.
+- `USER` rolü yalnızca `GET` isteklerini kullanabilir, `ADMIN` rolü yazma işlemlerini yönetir.
+- Hata cevaplarında hassas sistem ayrıntıları döndürülmez.
+- Spring Boot 4.0.6 ve pgJDBC 42.7.11 sürümleri için mevcut güvenlik bültenleri dikkate alındı.
+- Uygulama yanıt başlıklarında CSP, frame options, referrer policy ve permissions policy tanımlıdır.
+
+## Docker ile Çalıştırma
+
+PostgreSQL container’ını başlat:
 
 ```powershell
 docker compose up -d
 ```
 
-Run the application:
+Uygulamayı çalıştır:
 
 ```powershell
 .\mvnw.cmd spring-boot:run
 ```
 
-Open:
+Tarayıcıdan aç:
 
 ```text
 http://localhost:8080
 ```
 
-Run tests:
+Testleri çalıştır:
 
 ```powershell
 .\mvnw.cmd test
 ```
 
-## Default Users
+## Varsayılan Kullanıcılar
 
 - `user` / `1234`
 - `admin` / `admin123`
 
-Permissions:
+Yetkilendirme kuralları:
 
-- `GET /api/**`: `USER` or `ADMIN`
+- `GET /api/**`: `USER` veya `ADMIN`
 - `POST /api/**`: `ADMIN`
 - `PUT /api/**`: `ADMIN`
 - `DELETE /api/**`: `ADMIN`
 
-## Useful API Endpoints
+## Faydalı API’ler
 
 - `GET /api/products`
 - `GET /api/products/filter?minPrice=1000&maxPrice=3000&model=Elbise&brand=Zara%20Studio`
@@ -103,20 +113,20 @@ Permissions:
 
 ## Postman
 
-Import the collection and environment from the `postman` folder:
+Postman koleksiyonu ve environment dosyası `postman` klasöründe yer alır:
 
 - `postman/Nida-Butik.postman_collection.json`
 - `postman/Nida-Butik.postman_environment.json`
 
-The collection already includes the base URL and Basic Auth values for the default `user` and `admin` accounts.
+Koleksiyon içinde varsayılan `user` ve `admin` hesapları için Basic Auth bilgileri ve `baseUrl` tanımlıdır.
 
-## Demo Data
+## Demo Veri
 
-At startup the app seeds:
+Uygulama açılırken aşağıdaki demo veriler eklenir:
 
-- multiple customers for male and female top-buyer queries
-- boutique products with category, brand, and supplier relations
-- paid and unpaid sample orders
-- payment rows for completed orders
+- kadın ve erkek için birden fazla müşteri
+- kategori, marka ve tedarikçi ilişkileri tanımlı ürünler
+- ödenmiş ve açık durumdaki örnek siparişler
+- tamamlanmış siparişlere ait ödeme kayıtları
 
-This makes the project easier to demonstrate in IntelliJ, the browser, and Postman.
+Bu sayede proje IntelliJ IDEA, tarayıcı ve Postman üzerinde daha rahat gösterilebilir.
