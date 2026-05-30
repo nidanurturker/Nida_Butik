@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Nida Butik</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<header class="site-header">
+    <button class="menu-button" type="button" aria-label="Menüyü aç">
+        <span></span>
+        <span></span>
+    </button>
+    <a class="logo" href="/">Nida Butik</a>
+    <nav class="primary-nav" aria-label="Ana menü">
+        <a href="#collection">Kadın</a>
+        <a href="#editorial">Yeni sezon</a>
+        <a href="#collection">Koleksiyon</a>
+    </nav>
+    <div class="header-actions">
+        <a href="#collection">Ara</a>
+        <button id="cartButton" type="button">Sepet <span id="cartCount">0</span></button>
+    </div>
+</header>
+
+<main>
+    <section class="hero" id="editorial">
+        <div class="hero-media hero-media-large">
+            <img src="/images/zara/00387075250-p.jpg" alt="Beyaz midi elbise">
+        </div>
+        <div class="hero-media hero-media-small">
+            <img src="/images/zara/01165458632-p.jpg" alt="Kırmızı uzun elbise">
+        </div>
+        <div class="hero-copy">
+            <p>Yeni sezon</p>
+            <h1>NIDA STUDIO</h1>
+            <a href="#collection">Koleksiyonu keşfet</a>
+        </div>
+    </section>
+
+    <section class="collection-header" id="collection">
+        <div>
+            <p class="eyebrow">Kadın koleksiyonu</p>
+            <h2>Net silüetler, sakin renkler, güçlü parçalar.</h2>
+        </div>
+        <form id="filterForm" class="filters">
+            <label>
+                <span>Ürün ara</span>
+                <input id="model" placeholder="Elbise, blazer, triko">
+            </label>
+            <label>
+                <span>Marka</span>
+                <input id="brandName" placeholder="Zara Studio">
+            </label>
+            <label>
+                <span>Min fiyat</span>
+                <input id="minPrice" type="number" min="0" value="0">
+            </label>
+            <label>
+                <span>Max fiyat</span>
+                <input id="maxPrice" type="number" min="1" value="999999">
+            </label>
+            <button type="submit">Filtrele</button>
+        </form>
+    </section>
+
+    <section class="category-strip" aria-label="Kategori filtreleri">
+        <button class="category-button active" type="button" data-category="all">Tümü</button>
+        <button class="category-button" type="button" data-category="Elbise">Elbise</button>
+        <button class="category-button" type="button" data-category="Blazer">Blazer</button>
+        <button class="category-button" type="button" data-category="Triko">Triko</button>
+        <button class="category-button" type="button" data-category="Üst Giyim">Üst Giyim</button>
+    </section>
+
+    <section class="product-grid" id="productGrid" aria-live="polite"></section>
+</main>
+
+<aside class="cart-panel" id="cartPanel" aria-label="Sepet özeti">
+    <div class="cart-header">
+        <div>
+            <strong>Sepetim</strong>
+            <span id="cartSummary">0 ürün</span>
+        </div>
+        <button id="closeCart" type="button" aria-label="Sepeti kapat">Kapat</button>
+    </div>
+    <ul id="cartItems"></ul>
+    <div class="cart-empty" id="cartEmpty">
+        <strong>Sepetiniz boş</strong>
+        <span>Koleksiyondan beğendiğiniz parçaları ekleyebilirsiniz.</span>
+    </div>
+    <div class="cart-footer">
+        <div>
+            <span>Toplam</span>
+            <strong id="cartTotal">₺0,00</strong>
+        </div>
+        <button id="checkoutButton" type="button" disabled>Alışverişi Tamamla</button>
+    </div>
+</aside>
+
+<div class="image-modal" id="imageModal" aria-hidden="true">
+    <button id="closeImageModal" type="button" aria-label="Görseli kapat">Kapat</button>
+    <img id="modalImage" src="" alt="">
+    <span id="modalCaption"></span>
+</div>
+
+<footer class="footer">
+    <div>
+        <strong>Nida Butik</strong>
+        <span>Modern kadın giyim koleksiyonu</span>
+    </div>
+    <div>
+        <a href="#collection">Koleksiyon</a>
+        <a href="#editorial">Editoryal</a>
+        <span>İstanbul / Türkiye</span>
+    </div>
+</footer>
+
+<script src="/app.js"></script>
+</body>
+</html>
