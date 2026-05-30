@@ -4,7 +4,6 @@ import jakarta.validation.Valid;
 import org.example.nidabutik.dto.CustomerPurchaseSummary;
 import org.example.nidabutik.dto.CustomerRequest;
 import org.example.nidabutik.dto.CustomerResponse;
-import org.example.nidabutik.entity.Gender;
 import org.example.nidabutik.service.CustomerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -44,7 +43,7 @@ public class CustomerController {
 
     @GetMapping("/top-buyers")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public List<CustomerPurchaseSummary> topBuyers(@RequestParam Gender gender) {
+    public List<CustomerPurchaseSummary> topBuyers(@RequestParam String gender) {
         return customerService.getTopEightCustomersByGender(gender);
     }
 

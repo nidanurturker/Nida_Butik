@@ -8,6 +8,7 @@ import org.example.nidabutik.entity.Product;
 import org.example.nidabutik.exception.BusinessRuleException;
 import org.example.nidabutik.exception.ResourceNotFoundException;
 import org.example.nidabutik.repository.OrderRepository;
+import org.example.nidabutik.repository.OrderStatusRepository;
 import org.example.nidabutik.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,11 +22,13 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final CustomerService customerService;
     private final ProductRepository productRepository;
+    private final OrderStatusRepository orderStatusRepository;
 
-    public OrderService(OrderRepository orderRepository, CustomerService customerService, ProductRepository productRepository) {
+    public OrderService(OrderRepository orderRepository, CustomerService customerService, ProductRepository productRepository, OrderStatusRepository orderStatusRepository) {
         this.orderRepository = orderRepository;
         this.customerService = customerService;
         this.productRepository = productRepository;
+        this.orderStatusRepository = orderStatusRepository;
     }
 
     public List<OrderResponse> getAllOrders() {
@@ -40,6 +43,8 @@ public class OrderService {
     public OrderResponse createOrder(OrderRequest request) {
         CustomerOrder order = new CustomerOrder();
         order.setCustomer(customerService.findCustomer(request.customerId()));
+        order.setStatus(orderStatusRepository.findByCodeIgnoreCase("CREATED")
+                .orElseThrow(() -> new BusinessRuleException("Siparis durumu tanimli degil: CREATED")));
         BigDecimal total = BigDecimal.ZERO;
         for (var itemRequest : request.items()) {
             Product product = productRepository.findById(itemRequest.productId()).orElseThrow(() -> new ResourceNotFoundException("Urun bulunamadi: " + itemRequest.productId()));
@@ -63,6 +68,13 @@ public class OrderService {
     }
 
     OrderResponse toResponse(CustomerOrder order) {
-        return new OrderResponse(order.getId(), order.getCustomer().getEmail(), order.getStatus(), order.getTotalAmount(), order.getCreatedAt());
+        return new OrderResponse(
+                order.getId(),
+                order.getCustomer().getEmail(),
+                order.getStatus().getCode(),
+                order.getStatus().getLabel(),
+                order.getTotalAmount(),
+                order.getCreatedAt()
+        );
     }
 }

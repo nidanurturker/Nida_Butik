@@ -16,12 +16,12 @@ public class Payment {
     @JoinColumn(name = "order_id", unique = true)
     private CustomerOrder order;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 30)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "method_id")
     private PaymentMethod method;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "status_id")
     private PaymentStatus status;
 
     @Column(nullable = false, precision = 10, scale = 2)

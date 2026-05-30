@@ -15,8 +15,12 @@ import org.example.nidabutik.entity.Supplier;
 import org.example.nidabutik.repository.BrandRepository;
 import org.example.nidabutik.repository.CategoryRepository;
 import org.example.nidabutik.repository.CustomerRepository;
+import org.example.nidabutik.repository.GenderRepository;
 import org.example.nidabutik.repository.OrderRepository;
+import org.example.nidabutik.repository.OrderStatusRepository;
+import org.example.nidabutik.repository.PaymentMethodRepository;
 import org.example.nidabutik.repository.PaymentRepository;
+import org.example.nidabutik.repository.PaymentStatusRepository;
 import org.example.nidabutik.repository.ProductRepository;
 import org.example.nidabutik.repository.SupplierRepository;
 import org.springframework.boot.CommandLineRunner;
@@ -33,17 +37,25 @@ public class DataInitializer implements CommandLineRunner {
     private final SupplierRepository supplierRepository;
     private final ProductRepository productRepository;
     private final CustomerRepository customerRepository;
+    private final GenderRepository genderRepository;
     private final OrderRepository orderRepository;
     private final PaymentRepository paymentRepository;
+    private final OrderStatusRepository orderStatusRepository;
+    private final PaymentMethodRepository paymentMethodRepository;
+    private final PaymentStatusRepository paymentStatusRepository;
 
-    public DataInitializer(CategoryRepository categoryRepository, BrandRepository brandRepository, SupplierRepository supplierRepository, ProductRepository productRepository, CustomerRepository customerRepository, OrderRepository orderRepository, PaymentRepository paymentRepository) {
+    public DataInitializer(CategoryRepository categoryRepository, BrandRepository brandRepository, SupplierRepository supplierRepository, ProductRepository productRepository, CustomerRepository customerRepository, GenderRepository genderRepository, OrderRepository orderRepository, PaymentRepository paymentRepository, OrderStatusRepository orderStatusRepository, PaymentMethodRepository paymentMethodRepository, PaymentStatusRepository paymentStatusRepository) {
         this.categoryRepository = categoryRepository;
         this.brandRepository = brandRepository;
         this.supplierRepository = supplierRepository;
         this.productRepository = productRepository;
         this.customerRepository = customerRepository;
+        this.genderRepository = genderRepository;
         this.orderRepository = orderRepository;
         this.paymentRepository = paymentRepository;
+        this.orderStatusRepository = orderStatusRepository;
+        this.paymentMethodRepository = paymentMethodRepository;
+        this.paymentStatusRepository = paymentStatusRepository;
     }
 
     @Override
@@ -53,16 +65,28 @@ public class DataInitializer implements CommandLineRunner {
 
         Category dress = category("Elbise", "Gunluk ve ozel koleksiyon elbiseleri");
         Category blazer = category("Blazer", "Modern kesimli ceket ve blazer modelleri");
-        Category trousers = category("Pantolon", "Yuksek bel ve genis paça pantolonlar");
         Category knitwear = category("Triko", "Sezonluk triko ve ince orgu parcalari");
         Category top = category("Ust Giyim", "Tisort, bluz ve askili ust modelleri");
-        Category skirt = category("Etek", "Mini ve midi etek secenekleri");
 
         Brand zara = brand("Zara Studio", "Ispanya");
         Brand atelier = brand("Studio Line", "Turkiye");
         Brand edition = brand("Limited Edition", "Italya");
 
         Supplier supplier = supplier();
+
+        gender("FEMALE", "Kadin");
+        gender("MALE", "Erkek");
+        gender("OTHER", "Diger");
+        orderStatus("CREATED", "Olusturuldu");
+        orderStatus("PAID", "Odendi");
+        orderStatus("CANCELLED", "Iptal Edildi");
+        paymentMethod("CREDIT_CARD", "Kredi Karti");
+        paymentMethod("BANK_TRANSFER", "Banka Transferi");
+        paymentMethod("CASH_ON_DELIVERY", "Kapida Odeme");
+        paymentStatus("PAID", "Odendi");
+        paymentStatus("PENDING", "Beklemede");
+        paymentStatus("FAILED", "Basarisiz");
+        paymentStatus("REFUNDED", "Iade Edildi");
 
         upsertProduct("Kemerli Beyaz Midi Elbise", "ZR-1001", "keten karisimli kumas", new BigDecimal("2499.90"), 18, "/images/zara/00387075250-p.jpg", dress, zara, supplier);
         upsertProduct("Kirmizi Straplez Uzun Elbise", "ZR-1002", "dokumlu viskon", new BigDecimal("3299.90"), 12, "/images/zara/01165458632-p.jpg", dress, edition, supplier);
@@ -98,17 +122,37 @@ public class DataInitializer implements CommandLineRunner {
         });
     }
 
+    private Gender gender(String code, String label) {
+        return genderRepository.findByCodeIgnoreCase(code).orElseGet(() -> genderRepository.save(new Gender(code, label)));
+    }
+
+    private OrderStatus orderStatus(String code, String label) {
+        return orderStatusRepository.findByCodeIgnoreCase(code).orElseGet(() -> orderStatusRepository.save(new OrderStatus(code, label)));
+    }
+
+    private PaymentMethod paymentMethod(String code, String label) {
+        return paymentMethodRepository.findByCodeIgnoreCase(code).orElseGet(() -> paymentMethodRepository.save(new PaymentMethod(code, label)));
+    }
+
+    private PaymentStatus paymentStatus(String code, String label) {
+        return paymentStatusRepository.findByCodeIgnoreCase(code).orElseGet(() -> paymentStatusRepository.save(new PaymentStatus(code, label)));
+    }
+
     private void retireJewelryDemoProducts() {
         List<String> oldModels = List.of("MOON-24", "PEARL-11", "BLUE-08", "CHAIN-03", "EMERALD-14", "TWIST-19", "DAILY-07", "ROSE-22", "SET-30", "SEA-05");
         oldModels.forEach(model -> productRepository.findByModelIgnoreCase(model).ifPresent(productRepository::delete));
     }
 
     private void seedCustomers() {
-        ensureCustomer("Zeynep", "Yilmaz", "zeynep@example.com", "+905551112233", Gender.FEMALE, "Moda Caddesi No:12", "Istanbul");
-        ensureCustomer("Elif", "Demir", "elif@example.com", "+905551112244", Gender.FEMALE, "Bagdat Caddesi No:8", "Istanbul");
-        ensureCustomer("Aylin", "Kaya", "aylin@example.com", "+905551112255", Gender.FEMALE, "Caddebostan Sokak No:4", "Istanbul");
-        ensureCustomer("Mert", "Yildiz", "mert@example.com", "+905551112266", Gender.MALE, "Nilufer Bulvari No:21", "Bursa");
-        ensureCustomer("Can", "Acar", "can@example.com", "+905551112277", Gender.MALE, "Ataturk Bulvari No:19", "Ankara");
+        Gender female = gender("FEMALE", "Kadin");
+        Gender male = gender("MALE", "Erkek");
+        Gender other = gender("OTHER", "Diger");
+        ensureCustomer("Zeynep", "Yilmaz", "zeynep@example.com", "+905551112233", female, "Moda Caddesi No:12", "Istanbul");
+        ensureCustomer("Elif", "Demir", "elif@example.com", "+905551112244", female, "Bagdat Caddesi No:8", "Istanbul");
+        ensureCustomer("Aylin", "Kaya", "aylin@example.com", "+905551112255", female, "Caddebostan Sokak No:4", "Istanbul");
+        ensureCustomer("Mert", "Yildiz", "mert@example.com", "+905551112266", male, "Nilufer Bulvari No:21", "Bursa");
+        ensureCustomer("Can", "Acar", "can@example.com", "+905551112277", male, "Ataturk Bulvari No:19", "Ankara");
+        ensureCustomer("Defne", "Sahin", "defne@example.com", "+905551112288", other, "Tevikiye Mah. No:2", "Izmir");
     }
 
     private void ensureCustomer(String firstName, String lastName, String email, String phone, Gender gender, String address, String city) {
@@ -140,13 +184,13 @@ public class DataInitializer implements CommandLineRunner {
 
     private void createPaidOrder(String email, String transactionCode, OrderLine... lines) {
         CustomerOrder order = createOrder(email, lines);
-        order.setStatus(OrderStatus.PAID);
+        order.setStatus(orderStatus("PAID", "Odendi"));
         CustomerOrder savedOrder = orderRepository.save(order);
 
         Payment payment = new Payment();
         payment.setOrder(savedOrder);
-        payment.setMethod(PaymentMethod.CREDIT_CARD);
-        payment.setStatus(PaymentStatus.PAID);
+        payment.setMethod(paymentMethod("CREDIT_CARD", "Kredi Karti"));
+        payment.setStatus(paymentStatus("PAID", "Odendi"));
         payment.setAmount(savedOrder.getTotalAmount());
         payment.setTransactionCode(transactionCode);
         paymentRepository.save(payment);
@@ -160,6 +204,7 @@ public class DataInitializer implements CommandLineRunner {
         Customer customer = customerRepository.findByEmailIgnoreCase(email).orElseThrow();
         CustomerOrder order = new CustomerOrder();
         order.setCustomer(customer);
+        order.setStatus(orderStatus("CREATED", "Olusturuldu"));
         BigDecimal total = BigDecimal.ZERO;
         for (OrderLine line : lines) {
             Product product = productRepository.findByModelIgnoreCase(line.model()).orElseThrow();

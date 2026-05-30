@@ -23,8 +23,8 @@ public class Customer {
     @Column(length = 30)
     private String phone;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "gender_id")
     private Gender gender;
 
     @Column(nullable = false, length = 240)

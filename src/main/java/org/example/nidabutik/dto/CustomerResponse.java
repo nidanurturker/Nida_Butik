@@ -1,7 +1,5 @@
 package org.example.nidabutik.dto;
 
-import org.example.nidabutik.entity.Gender;
-
 import java.time.LocalDateTime;
 
 public record CustomerResponse(
@@ -10,7 +8,8 @@ public record CustomerResponse(
         String lastName,
         String email,
         String phone,
-        Gender gender,
+        String genderCode,
+        String genderLabel,
         String address,
         String city,
         LocalDateTime createdAt

@@ -34,11 +34,15 @@ Nida Butik, takı ve kadın giyim odaklı bir butik satış sitesi için hazırl
 - `brands`
 - `categories`
 - `suppliers`
+- `genders`
+- `order_statuses`
+- `payment_methods`
+- `payment_statuses`
 - `orders`
 - `order_items`
 - `payments`
 
-`products` tablosu marka, kategori ve tedarikçi tablolarına bağlıdır. `orders` ve `order_items` satış akışını yönetir. `payments` tablosu sipariş ile bire bir ilişkilidir.
+`products` tablosu marka, kategori ve tedarikçi tablolarına bağlıdır. `customers` tablosu cinsiyet bilgisini ayrı `genders` tablosu üzerinden tutar. `orders` sipariş durumunu `order_statuses` tablosu ile, `payments` ise ödeme yöntemi ve ödeme durumunu ayrı lookup tabloları ile yönetir. Bu yapı tekrar eden metinleri azaltır ve 3NF yaklaşımını güçlendirir.
 
 ## Tasarım Yönergesi
 
