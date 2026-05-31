@@ -8,21 +8,87 @@
 </head>
 <body>
 <header class="site-header">
-    <button class="menu-button" type="button" aria-label="Menüyü aç">
+    <button class="menu-button" id="menuButton" type="button" aria-controls="menuPanel" aria-expanded="false" aria-label="Menüyü aç">
+        <span></span>
         <span></span>
         <span></span>
     </button>
     <a class="logo" href="/">Nida Butik</a>
-    <nav class="primary-nav" aria-label="Ana menü">
-        <a href="#collection">Kadın</a>
-        <a href="#editorial">Yeni sezon</a>
-        <a href="#collection">Koleksiyon</a>
-    </nav>
-    <div class="header-actions">
-        <a href="#collection">Ara</a>
-        <button id="cartButton" type="button">Sepet <span id="cartCount">0</span></button>
-    </div>
+    <button id="cartButton" class="cart-button" type="button" aria-label="Sepeti aç">
+        <span>Sepet</span>
+        <span id="cartCount">0</span>
+    </button>
 </header>
+
+<div class="menu-overlay" id="menuOverlay" hidden></div>
+
+<aside class="menu-panel" id="menuPanel" aria-hidden="true" aria-label="Koleksiyon menüsü">
+    <div class="menu-shell">
+        <div class="menu-panel-header">
+            <div>
+                <p class="menu-kicker">WOMAN</p>
+                <strong>Koleksiyon menüsü</strong>
+            </div>
+            <button id="closeMenu" type="button" aria-label="Menüyü kapat">Kapat</button>
+        </div>
+
+        <div class="menu-layout">
+            <nav class="menu-nav" aria-label="Hızlı gezinme">
+                <div class="menu-group">
+                    <p class="menu-group-title">Discover</p>
+                    <button class="menu-link" type="button" data-scroll-target="#editorial">Yeni sezon</button>
+                    <button class="menu-link" type="button" data-scroll-target="#collection">Koleksiyon</button>
+                    <button class="menu-link" type="button" data-scroll-target="#collection">Görünümü keşfet</button>
+                </div>
+
+                <div class="menu-group">
+                    <p class="menu-group-title">Collection</p>
+                    <button class="menu-link category-button active" type="button" data-category="all">Tümü</button>
+                    <button class="menu-link category-button" type="button" data-category="Elbise">Elbise</button>
+                    <button class="menu-link category-button" type="button" data-category="Blazer">Blazer</button>
+                    <button class="menu-link category-button" type="button" data-category="Triko">Triko</button>
+                    <button class="menu-link category-button" type="button" data-category="Üst Giyim">Üst Giyim</button>
+                </div>
+
+                <div class="menu-group">
+                    <p class="menu-group-title">Actions</p>
+                    <button class="menu-link" type="button" id="menuCartShortcut">Sepeti aç</button>
+                    <button class="menu-link" type="button" data-scroll-target="#collection">Ürünlere dön</button>
+                </div>
+            </nav>
+
+            <div class="menu-panel-content">
+                <form id="filterForm" class="menu-search">
+                    <label>
+                        <span>Ürün ara</span>
+                        <input id="model" placeholder="Elbise, blazer, triko">
+                    </label>
+                    <div class="menu-note">
+                        <span>Hızlı ipucu</span>
+                        <p>Arama, kategori ve fiyat aralığı birlikte çalışır. En hızlı sonuç için üçünü birlikte kullan.</p>
+                    </div>
+                    <div class="menu-grid">
+                        <label>
+                            <span>Min fiyat</span>
+                            <input id="minPrice" type="number" min="0" value="0">
+                        </label>
+                        <label>
+                            <span>Max fiyat</span>
+                            <input id="maxPrice" type="number" min="1" value="999999">
+                        </label>
+                    </div>
+                    <button type="submit">Filtreyi uygula</button>
+                </form>
+
+                <div class="menu-feature-card">
+                    <p class="menu-kicker">Selected view</p>
+                    <strong id="productCount">0 ürün</strong>
+                    <span id="activeFilterSummary">Filtreler menüden yönetilir.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</aside>
 
 <main>
     <section class="hero" id="editorial">
@@ -44,33 +110,9 @@
             <p class="eyebrow">Kadın koleksiyonu</p>
             <h2>Net silüetler, sakin renkler, güçlü parçalar.</h2>
         </div>
-        <form id="filterForm" class="filters">
-            <label>
-                <span>Ürün ara</span>
-                <input id="model" placeholder="Elbise, blazer, triko">
-            </label>
-            <label>
-                <span>Marka</span>
-                <input id="brandName" placeholder="Zara Studio">
-            </label>
-            <label>
-                <span>Min fiyat</span>
-                <input id="minPrice" type="number" min="0" value="0">
-            </label>
-            <label>
-                <span>Max fiyat</span>
-                <input id="maxPrice" type="number" min="1" value="999999">
-            </label>
-            <button type="submit">Filtrele</button>
-        </form>
-    </section>
-
-    <section class="category-strip" aria-label="Kategori filtreleri">
-        <button class="category-button active" type="button" data-category="all">Tümü</button>
-        <button class="category-button" type="button" data-category="Elbise">Elbise</button>
-        <button class="category-button" type="button" data-category="Blazer">Blazer</button>
-        <button class="category-button" type="button" data-category="Triko">Triko</button>
-        <button class="category-button" type="button" data-category="Üst Giyim">Üst Giyim</button>
+        <div class="collection-actions">
+            <button class="secondary-button" id="openMenuButton" type="button">Filtrele</button>
+        </div>
     </section>
 
     <section class="product-grid" id="productGrid" aria-live="polite"></section>
