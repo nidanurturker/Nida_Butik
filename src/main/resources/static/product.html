@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ürün Detayı | Nida Butik</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body class="product-page">
+<header class="site-header">
+    <a class="logo" href="/">Nida Butik</a>
+    <a class="cart-button product-back-link" href="/">
+        <span>Ana sayfa</span>
+    </a>
+    <button id="cartButton" class="cart-button" type="button" aria-label="Sepeti aç">
+        <span>Sepet</span>
+        <span id="cartCount">0</span>
+    </button>
+</header>
+
+<main class="product-detail-shell">
+    <section class="product-detail" id="productDetail" aria-live="polite">
+        <div class="product-detail-media">
+            <img id="productImage" src="" alt="">
+        </div>
+        <div class="product-detail-copy">
+            <p class="product-detail-kicker" id="productCategory">Ürün</p>
+            <h1 id="productName">Yükleniyor...</h1>
+            <p class="product-detail-meta" id="productMeta"></p>
+            <div class="product-detail-price-row">
+                <strong id="productPrice">₺0,00</strong>
+                <span id="productStock"></span>
+            </div>
+            <p class="product-detail-description" id="productDescription"></p>
+
+            <div class="product-detail-actions">
+                <button id="addToCartButton" type="button">Sepete ekle</button>
+                <a class="secondary-button product-detail-home" href="/">Geri dön</a>
+            </div>
+
+            <div class="product-detail-specs">
+                <div>
+                    <span>Marka</span>
+                    <strong id="productBrand"></strong>
+                </div>
+                <div>
+                    <span>Tedarikçi</span>
+                    <strong id="productSupplier"></strong>
+                </div>
+                <div>
+                    <span>Model</span>
+                    <strong id="productModel"></strong>
+                </div>
+                <div>
+                    <span>Materyal</span>
+                    <strong id="productMaterial"></strong>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<aside class="cart-panel" id="cartPanel" aria-label="Sepet özeti">
+    <div class="cart-header">
+        <div>
+            <strong>Sepetim</strong>
+            <span id="cartSummary">0 ürün</span>
+        </div>
+        <button id="closeCart" type="button" aria-label="Sepeti kapat">Kapat</button>
+    </div>
+    <ul id="cartItems"></ul>
+    <div class="cart-empty" id="cartEmpty">
+        <strong>Sepetiniz boş</strong>
+        <span>Beğendiğiniz parçaları sepete ekleyebilirsiniz.</span>
+    </div>
+    <div class="cart-footer">
+        <div>
+            <span>Toplam</span>
+            <strong id="cartTotal">₺0,00</strong>
+        </div>
+        <button id="checkoutButton" type="button" disabled>Alışverişi Tamamla</button>
+    </div>
+</aside>
+
+<script src="/product.js"></script>
+</body>
+</html>

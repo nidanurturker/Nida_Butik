@@ -33,14 +33,7 @@
         </div>
 
         <div class="menu-layout">
-            <nav class="menu-nav" aria-label="Hızlı gezinme">
-                <div class="menu-group">
-                    <p class="menu-group-title">Discover</p>
-                    <button class="menu-link" type="button" data-scroll-target="#editorial">Yeni sezon</button>
-                    <button class="menu-link" type="button" data-scroll-target="#collection">Koleksiyon</button>
-                    <button class="menu-link" type="button" data-scroll-target="#collection">Görünümü keşfet</button>
-                </div>
-
+            <nav class="menu-nav" aria-label="Koleksiyon gezinme">
                 <div class="menu-group">
                     <p class="menu-group-title">Collection</p>
                     <button class="menu-link category-button active" type="button" data-category="all">Tümü</button>
@@ -48,12 +41,6 @@
                     <button class="menu-link category-button" type="button" data-category="Blazer">Blazer</button>
                     <button class="menu-link category-button" type="button" data-category="Triko">Triko</button>
                     <button class="menu-link category-button" type="button" data-category="Üst Giyim">Üst Giyim</button>
-                </div>
-
-                <div class="menu-group">
-                    <p class="menu-group-title">Actions</p>
-                    <button class="menu-link" type="button" id="menuCartShortcut">Sepeti aç</button>
-                    <button class="menu-link" type="button" data-scroll-target="#collection">Ürünlere dön</button>
                 </div>
             </nav>
 
@@ -63,10 +50,6 @@
                         <span>Ürün ara</span>
                         <input id="model" placeholder="Elbise, blazer, triko">
                     </label>
-                    <div class="menu-note">
-                        <span>Hızlı ipucu</span>
-                        <p>Arama, kategori ve fiyat aralığı birlikte çalışır. En hızlı sonuç için üçünü birlikte kullan.</p>
-                    </div>
                     <div class="menu-grid">
                         <label>
                             <span>Min fiyat</span>
@@ -92,11 +75,17 @@
 
 <main>
     <section class="hero" id="editorial">
-        <div class="hero-media hero-media-large">
-            <img src="/images/zara/00387075250-p.jpg" alt="Beyaz midi elbise">
-        </div>
-        <div class="hero-media hero-media-small">
-            <img src="/images/zara/01165458632-p.jpg" alt="Kırmızı uzun elbise">
+        <div class="hero-carousel" id="heroCarousel" aria-label="Açılış görselleri">
+            <div class="hero-slide hero-slide--pair is-active">
+                <div class="hero-image hero-image--large">
+                    <img src="/images/zara/resim1.jpg" alt="Yeni eklenen görsel 1">
+                </div>
+                <div class="hero-image hero-image--small">
+                    <img src="/images/zara/resim2.jpg" alt="Yeni eklenen görsel 2">
+                </div>
+            </div>
+            <img class="hero-slide" src="/images/zara/WhatsApp%20Image%202026-06-02%20at%2019.25.47.jpeg" alt="Modern kadın giyim görünümü">
+            <img class="hero-slide" src="/images/zara/resim.png" alt="Resim">
         </div>
         <div class="hero-copy">
             <p>Yeni sezon</p>

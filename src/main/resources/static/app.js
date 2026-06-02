@@ -6,7 +6,6 @@ const openMenuButton = document.querySelector("#openMenuButton");
 const menuPanel = document.querySelector("#menuPanel");
 const menuOverlay = document.querySelector("#menuOverlay");
 const closeMenu = document.querySelector("#closeMenu");
-const menuCartShortcut = document.querySelector("#menuCartShortcut");
 const cartButton = document.querySelector("#cartButton");
 const cartPanel = document.querySelector("#cartPanel");
 const closeCart = document.querySelector("#closeCart");
@@ -16,16 +15,18 @@ const cartItems = document.querySelector("#cartItems");
 const cartEmpty = document.querySelector("#cartEmpty");
 const cartTotal = document.querySelector("#cartTotal");
 const checkoutButton = document.querySelector("#checkoutButton");
-const imageModal = document.querySelector("#imageModal");
-const modalImage = document.querySelector("#modalImage");
-const modalCaption = document.querySelector("#modalCaption");
-const closeImageModal = document.querySelector("#closeImageModal");
 const productCount = document.querySelector("#productCount");
 const activeFilterSummary = document.querySelector("#activeFilterSummary");
+const heroCarousel = document.querySelector("#heroCarousel");
+const heroSlides = heroCarousel ? Array.from(heroCarousel.querySelectorAll(".hero-slide")) : [];
 
 let products = [];
 let selectedCategory = "all";
-let cart = [];
+let cart = loadCartFromStorage();
+let heroSlideIndex = 0;
+let heroTimer = null;
+const HERO_ROTATION_MS = 10000;
+const CART_STORAGE_KEY = "nida-butik-cart";
 
 function authHeader() {
     return "Basic " + btoa("user:1234");
@@ -33,6 +34,30 @@ function authHeader() {
 
 function formatPrice(value) {
     return new Intl.NumberFormat("tr-TR", { style: "currency", currency: "TRY" }).format(value);
+}
+
+function normalizeText(value) {
+    return String(value ?? "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase();
+}
+
+function loadCartFromStorage() {
+    try {
+        const raw = window.localStorage.getItem("nida-butik-cart");
+        if (!raw) {
+            return [];
+        }
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [];
+    } catch {
+        return [];
+    }
+}
+
+function saveCartToStorage() {
+    window.localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
 }
 
 function getCategoryLabel(category) {
@@ -51,6 +76,58 @@ function buildFilterSummary() {
     parts.push(`fiyat: ${formatPrice(Number(minPrice))} - ${formatPrice(Number(maxPrice))}`);
 
     return parts.join(" • ");
+}
+
+function getVisibleProducts() {
+    const search = normalizeText(document.querySelector("#model").value.trim());
+    const minPrice = Number(document.querySelector("#minPrice").value || "0");
+    const maxPrice = Number(document.querySelector("#maxPrice").value || "999999");
+
+    return products.filter(product => {
+        const matchesCategory = selectedCategory === "all"
+            || normalizeText(product.category) === normalizeText(selectedCategory);
+        const matchesSearch = !search
+            || normalizeText(product.name).includes(search)
+            || normalizeText(product.model).includes(search)
+            || normalizeText(product.brand).includes(search)
+            || normalizeText(product.material).includes(search)
+            || normalizeText(product.category).includes(search);
+        const price = Number(product.price);
+        const matchesPrice = price >= minPrice && price <= maxPrice;
+
+        return matchesCategory && matchesSearch && matchesPrice;
+    });
+}
+
+function showHeroSlide(index) {
+    if (heroSlides.length === 0) {
+        return;
+    }
+
+    heroSlideIndex = (index + heroSlides.length) % heroSlides.length;
+
+    heroSlides.forEach((slide, slideIndex) => {
+        slide.classList.toggle("is-active", slideIndex === heroSlideIndex);
+    });
+}
+
+function advanceHeroSlide() {
+    showHeroSlide(heroSlideIndex + 1);
+}
+
+function stopHeroRotation() {
+    if (heroTimer !== null) {
+        window.clearInterval(heroTimer);
+        heroTimer = null;
+    }
+}
+
+function startHeroRotation() {
+    if (heroSlides.length < 2 || heroTimer !== null) {
+        return;
+    }
+
+    heroTimer = window.setInterval(advanceHeroSlide, HERO_ROTATION_MS);
 }
 
 function setMenuOpen(isOpen) {
@@ -78,23 +155,19 @@ function openCartPanel() {
     cartPanel.classList.add("open");
 }
 
-function scrollToTarget(selector) {
-    const target = document.querySelector(selector);
-    if (!target) {
-        return;
-    }
-    target.scrollIntoView({ behavior: "smooth", block: "start" });
-}
-
 function productCard(product) {
     const card = document.createElement("article");
     card.className = "product-card";
+    card.addEventListener("click", event => {
+        if (event.target.closest("button")) {
+            return;
+        }
+        window.location.href = `/product/${product.id}`;
+    });
 
-    const imageWrap = document.createElement("button");
-    imageWrap.type = "button";
+    const imageWrap = document.createElement("a");
+    imageWrap.href = `/product/${product.id}`;
     imageWrap.className = "product-image";
-    imageWrap.setAttribute("aria-label", `${product.name} görselini aç`);
-    imageWrap.addEventListener("click", () => openImageModal(product));
 
     const img = document.createElement("img");
     img.src = product.imageUrl;
@@ -105,6 +178,7 @@ function productCard(product) {
     info.className = "product-info";
 
     const title = document.createElement("h3");
+    title.className = "product-title";
     title.textContent = product.name;
 
     const meta = document.createElement("p");
@@ -118,10 +192,22 @@ function productCard(product) {
 
     const button = document.createElement("button");
     button.type = "button";
-    button.textContent = "Sepete ekle";
-    button.addEventListener("click", () => addToCart(product));
+    button.textContent = "Detaya git";
+    button.addEventListener("click", () => {
+        window.location.href = `/product/${product.id}`;
+    });
 
-    bottom.append(price, button);
+    const cartButton = document.createElement("button");
+    cartButton.type = "button";
+    cartButton.className = "secondary-action";
+    cartButton.textContent = "Sepete ekle";
+    cartButton.addEventListener("click", event => {
+        event.preventDefault();
+        event.stopPropagation();
+        addToCart(product);
+    });
+
+    bottom.append(price, button, cartButton);
     info.append(title, meta, bottom);
     card.append(imageWrap, info);
     return card;
@@ -129,9 +215,7 @@ function productCard(product) {
 
 function renderProducts() {
     grid.textContent = "";
-    const visibleProducts = selectedCategory === "all"
-        ? products
-        : products.filter(product => product.category === selectedCategory);
+    const visibleProducts = getVisibleProducts();
 
     productCount.textContent = `${visibleProducts.length} ürün`;
     activeFilterSummary.textContent = buildFilterSummary();
@@ -201,6 +285,7 @@ function renderCart() {
     cartTotal.textContent = formatPrice(total);
     cartEmpty.hidden = cart.length > 0;
     checkoutButton.disabled = cart.length === 0;
+    saveCartToStorage();
 
     cart.forEach(item => {
         cartItems.append(renderCartItem(item));
@@ -238,46 +323,23 @@ function removeFromCart(productId) {
     renderCart();
 }
 
-function openImageModal(product) {
-    modalImage.src = product.imageUrl;
-    modalImage.alt = product.name;
-    modalCaption.textContent = product.name;
-    imageModal.classList.add("open");
-    imageModal.setAttribute("aria-hidden", "false");
-}
-
-function closeModal() {
-    imageModal.classList.remove("open");
-    imageModal.setAttribute("aria-hidden", "true");
-    modalImage.src = "";
-    modalCaption.textContent = "";
-}
-
 async function loadProducts(event) {
     if (event) {
         event.preventDefault();
     }
 
-    const params = new URLSearchParams();
-    params.set("minPrice", document.querySelector("#minPrice").value || "0");
-    params.set("maxPrice", document.querySelector("#maxPrice").value || "999999");
+    if (products.length === 0) {
+        grid.textContent = "Ürünler yükleniyor...";
+        const response = await fetch("/api/products", { headers: { Authorization: authHeader() } });
+        if (!response.ok) {
+            grid.textContent = "Ürünler yüklenemedi. Lütfen daha sonra tekrar deneyin.";
+            return;
+        }
 
-    const search = document.querySelector("#model").value.trim();
-
-    if (search) {
-        params.set("model", search);
+        products = await response.json();
     }
 
-    grid.textContent = "Ürünler yükleniyor...";
     activeFilterSummary.textContent = buildFilterSummary();
-
-    const response = await fetch(`/api/products/filter?${params}`, { headers: { Authorization: authHeader() } });
-    if (!response.ok) {
-        grid.textContent = "Ürünler yüklenemedi. Lütfen daha sonra tekrar deneyin.";
-        return;
-    }
-
-    products = await response.json();
     renderProducts();
     closeMenuPanel();
 }
@@ -303,36 +365,21 @@ menuButton.addEventListener("click", () => {
 openMenuButton.addEventListener("click", openMenu);
 closeMenu.addEventListener("click", closeMenuPanel);
 menuOverlay.addEventListener("click", closeMenuPanel);
-menuCartShortcut.addEventListener("click", () => {
-    closeMenuPanel();
-    openCartPanel();
-});
 
 cartButton.addEventListener("click", openCartPanel);
 closeCart.addEventListener("click", closeCartPanel);
-closeImageModal.addEventListener("click", closeModal);
-imageModal.addEventListener("click", event => {
-    if (event.target === imageModal) {
-        closeModal();
-    }
-});
 document.addEventListener("keydown", event => {
     if (event.key === "Escape") {
-        if (imageModal.classList.contains("open")) {
-            closeModal();
-        }
         if (menuPanel.classList.contains("open")) {
             closeMenuPanel();
         }
     }
 });
 
-document.querySelectorAll("[data-scroll-target]").forEach(button => {
-    button.addEventListener("click", () => {
-        scrollToTarget(button.dataset.scrollTarget);
-        closeMenuPanel();
-    });
-});
-
 form.addEventListener("submit", loadProducts);
+renderCart();
 loadProducts();
+
+if (heroCarousel && heroSlides.length > 1) {
+    startHeroRotation();
+}
