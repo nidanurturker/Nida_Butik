@@ -3,6 +3,7 @@ package org.example.nidabutik.service;
 import org.example.nidabutik.dto.ProductRequest;
 import org.example.nidabutik.dto.ProductResponse;
 import org.example.nidabutik.entity.Product;
+import org.example.nidabutik.exception.BusinessRuleException;
 import org.example.nidabutik.exception.ResourceNotFoundException;
 import org.example.nidabutik.repository.BrandRepository;
 import org.example.nidabutik.repository.CategoryRepository;
@@ -63,6 +64,9 @@ public class ProductService {
 
     @Transactional
     public ProductResponse createProduct(ProductRequest request) {
+        if (productRepository.existsByModelIgnoreCase(request.model())) {
+            throw new BusinessRuleException("Aynı model numarasına sahip urun zaten kayitli: " + request.model());
+        }
         Product product = new Product();
         applyRequest(product, request);
         return productMapper.toResponse(productRepository.save(product));
@@ -71,6 +75,11 @@ public class ProductService {
     @Transactional
     public ProductResponse updateProduct(Long id, ProductRequest request) {
         Product product = findProduct(id);
+        productRepository.findByModelIgnoreCase(request.model())
+                .filter(existing -> !existing.getId().equals(id))
+                .ifPresent(existing -> {
+                    throw new BusinessRuleException("Aynı model numarasına sahip urun zaten kayitli: " + request.model());
+                });
         applyRequest(product, request);
         return productMapper.toResponse(productRepository.save(product));
     }

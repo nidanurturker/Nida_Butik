@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "products", indexes = {
+@Table(name = "products", uniqueConstraints = @UniqueConstraint(columnNames = "model"), indexes = {
         @Index(name = "idx_products_model", columnList = "model"),
         @Index(name = "idx_products_price", columnList = "price")
 })
