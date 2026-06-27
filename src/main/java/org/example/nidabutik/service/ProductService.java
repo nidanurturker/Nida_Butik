@@ -97,6 +97,7 @@ public class ProductService {
         product.setName(request.name());
         product.setModel(request.model());
         product.setMaterial(request.material());
+        product.setSize(request.size());
         product.setPrice(request.price());
         product.setStockQuantity(request.stockQuantity());
         product.setImageUrl(request.imageUrl());

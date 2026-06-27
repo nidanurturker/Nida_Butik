@@ -7,6 +7,7 @@ public record ProductResponse(
         String name,
         String model,
         String material,
+        String size,
         BigDecimal price,
         Integer stockQuantity,
         String imageUrl,

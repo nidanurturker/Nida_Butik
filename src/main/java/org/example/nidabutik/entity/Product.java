@@ -23,6 +23,9 @@ public class Product {
     @Column(nullable = false, length = 40)
     private String material;
 
+    @Column(nullable = false, length = 40)
+    private String size;
+
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
 
@@ -70,6 +73,14 @@ public class Product {
 
     public void setMaterial(String material) {
         this.material = material;
+    }
+
+    public String getSize() {
+        return size;
+    }
+
+    public void setSize(String size) {
+        this.size = size;
     }
 
     public BigDecimal getPrice() {

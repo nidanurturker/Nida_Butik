@@ -1,4 +1,4 @@
-const grid = document.querySelector("#productGrid");
+﻿const grid = document.querySelector("#productGrid");
 const form = document.querySelector("#filterForm");
 const categoryButtons = document.querySelectorAll(".category-button");
 const menuButton = document.querySelector("#menuButton");
@@ -50,7 +50,13 @@ function loadCartFromStorage() {
             return [];
         }
         const parsed = JSON.parse(raw);
-        return Array.isArray(parsed) ? parsed : [];
+        if (!Array.isArray(parsed)) {
+            return [];
+        }
+        return parsed.map(item => ({
+            ...item,
+            selectedSize: item.selectedSize || item.product?.size || "Tek beden",
+        }));
     } catch {
         return [];
     }
@@ -62,6 +68,50 @@ function saveCartToStorage() {
 
 function getCategoryLabel(category) {
     return category === "all" ? "Tümü" : category;
+}
+
+function resolveCartItemSize(cartItem) {
+    return cartItem.selectedSize || cartItem.product.size || "Tek beden";
+}
+
+function getSizeOptions(product) {
+    const rawSize = String(product?.size ?? "").trim();
+
+    if (!rawSize || /^tek beden$/i.test(rawSize)) {
+        return [rawSize || "Tek beden"];
+    }
+
+    const splitSizes = rawSize
+        .split(/[,/|]+/)
+        .map(size => size.trim())
+        .filter(Boolean);
+
+    if (splitSizes.length > 1) {
+        return [...new Set(splitSizes)];
+    }
+
+    const normalized = rawSize.toUpperCase();
+    const letterSizes = ["XS", "S", "M", "L", "XL", "XXL"];
+    if (letterSizes.includes(normalized)) {
+        return letterSizes;
+    }
+
+    const numericSize = Number.parseInt(rawSize, 10);
+    if (!Number.isNaN(numericSize)) {
+        const sizes = [numericSize - 4, numericSize - 2, numericSize, numericSize + 2];
+        return [...new Set(sizes.filter(size => size > 0).map(String))];
+    }
+
+    return [rawSize];
+}
+
+function getPreferredSize(product, explicitSize = null) {
+    if (explicitSize) {
+        return explicitSize;
+    }
+
+    const options = getSizeOptions(product);
+    return options[0] || product.size || "Tek beden";
 }
 
 function buildFilterSummary() {
@@ -200,11 +250,11 @@ function productCard(product) {
     const cartButton = document.createElement("button");
     cartButton.type = "button";
     cartButton.className = "secondary-action";
-    cartButton.textContent = "Sepete ekle";
+    cartButton.textContent = "Beden seç";
     cartButton.addEventListener("click", event => {
         event.preventDefault();
         event.stopPropagation();
-        addToCart(product);
+        window.location.href = `/product/${product.id}`;
     });
 
     bottom.append(price, button, cartButton);
@@ -243,7 +293,7 @@ function renderCartItem(cartItem) {
     title.textContent = cartItem.product.name;
 
     const meta = document.createElement("span");
-    meta.textContent = `${cartItem.product.category} · ${formatPrice(cartItem.product.price)}`;
+    meta.textContent = `${cartItem.product.category} · ${formatPrice(cartItem.product.price)} · Beden: ${resolveCartItemSize(cartItem)}`;
 
     const controls = document.createElement("div");
     controls.className = "cart-item-controls";
@@ -252,7 +302,7 @@ function renderCartItem(cartItem) {
     decrease.type = "button";
     decrease.textContent = "-";
     decrease.setAttribute("aria-label", `${cartItem.product.name} adet azalt`);
-    decrease.addEventListener("click", () => decreaseQuantity(cartItem.product.id));
+    decrease.addEventListener("click", () => decreaseQuantity(cartItem.product.id, resolveCartItemSize(cartItem)));
 
     const quantity = document.createElement("span");
     quantity.textContent = cartItem.quantity;
@@ -261,13 +311,13 @@ function renderCartItem(cartItem) {
     increase.type = "button";
     increase.textContent = "+";
     increase.setAttribute("aria-label", `${cartItem.product.name} adet artır`);
-    increase.addEventListener("click", () => addToCart(cartItem.product, false));
+    increase.addEventListener("click", () => addToCart(cartItem.product, false, resolveCartItemSize(cartItem)));
 
     const remove = document.createElement("button");
     remove.type = "button";
     remove.className = "remove-item";
     remove.textContent = "Sil";
-    remove.addEventListener("click", () => removeFromCart(cartItem.product.id));
+    remove.addEventListener("click", () => removeFromCart(cartItem.product.id, resolveCartItemSize(cartItem)));
 
     controls.append(decrease, quantity, increase, remove);
     info.append(title, meta, controls);
@@ -292,12 +342,13 @@ function renderCart() {
     });
 }
 
-function addToCart(product, openPanel = true) {
-    const existing = cart.find(item => item.product.id === product.id);
+function addToCart(product, openPanel = true, explicitSize = null) {
+    const resolvedSize = getPreferredSize(product, explicitSize);
+    const existing = cart.find(item => item.product.id === product.id && resolveCartItemSize(item) === resolvedSize);
     if (existing) {
         existing.quantity += 1;
     } else {
-        cart.push({ product, quantity: 1 });
+        cart.push({ product, quantity: 1, selectedSize: resolvedSize });
     }
     renderCart();
     if (openPanel) {
@@ -305,21 +356,21 @@ function addToCart(product, openPanel = true) {
     }
 }
 
-function decreaseQuantity(productId) {
-    const existing = cart.find(item => item.product.id === productId);
+function decreaseQuantity(productId, selectedSizeValue) {
+    const existing = cart.find(item => item.product.id === productId && resolveCartItemSize(item) === selectedSizeValue);
     if (!existing) {
         return;
     }
     existing.quantity -= 1;
     if (existing.quantity <= 0) {
-        removeFromCart(productId);
+        removeFromCart(productId, selectedSizeValue);
         return;
     }
     renderCart();
 }
 
-function removeFromCart(productId) {
-    cart = cart.filter(item => item.product.id !== productId);
+function removeFromCart(productId, selectedSizeValue) {
+    cart = cart.filter(item => !(item.product.id === productId && resolveCartItemSize(item) === selectedSizeValue));
     renderCart();
 }
 

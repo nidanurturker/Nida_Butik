@@ -88,21 +88,21 @@ public class DataInitializer implements CommandLineRunner {
         paymentStatus("FAILED", "Basarisiz");
         paymentStatus("REFUNDED", "Iade Edildi");
 
-        upsertProduct("Kemerli Beyaz Midi Elbise", "ZR-1001", "keten karisimli kumas", new BigDecimal("2499.90"), 18, "/images/zara/00387075250-p.jpg", dress, zara, supplier);
-        upsertProduct("Kirmizi Straplez Uzun Elbise", "ZR-1002", "dokumlu viskon", new BigDecimal("3299.90"), 12, "/images/zara/01165458632-p.jpg", dress, edition, supplier);
-        upsertProduct("Cizgili Ince Triko Tunik", "ZR-1003", "pamuklu triko", new BigDecimal("1699.90"), 22, "/images/zara/02142175500-p.jpg", knitwear, atelier, supplier);
-        upsertProduct("Siyah Halter Bluz ve Desenli Sort", "ZR-1004", "saten dokulu kumas", new BigDecimal("1899.90"), 15, "/images/zara/02157023700-p.jpg", top, zara, supplier);
-        upsertProduct("Dokulu Ekose Ceket", "ZR-1005", "tuvit dokulu kumas", new BigDecimal("2799.90"), 11, "/images/zara/02719903084-p.jpg", blazer, edition, supplier);
-        upsertProduct("Oversize Siyah Blazer", "ZR-1006", "yun karisimli kumas", new BigDecimal("3499.90"), 10, "/images/zara/02753122700-p.jpg", blazer, zara, supplier);
-        upsertProduct("Pudra Askili Midi Elbise", "ZR-1007", "akiskan saten", new BigDecimal("2199.90"), 16, "/images/zara/02860342902-p.jpg", dress, atelier, supplier);
-        upsertProduct("Kruvaze Dugmeli Mini Elbise", "ZR-1008", "pamuklu kanvas", new BigDecimal("2599.90"), 14, "/images/zara/02930727052-p.jpg", dress, zara, supplier);
-        upsertProduct("Basic Beyaz Tisort ve Denim", "ZR-1009", "pamuk denim kombin", new BigDecimal("1499.90"), 28, "/images/zara/04424306250-p.jpg", top, atelier, supplier);
-        upsertProduct("Puantiye Desenli Midi Elbise", "ZR-1010", "hafif viskon", new BigDecimal("1999.90"), 19, "/images/zara/05039190300-p.jpg", dress, edition, supplier);
-        upsertProduct("Asimetrik Kapanmali Triko Top", "ZR-1011", "yumusak triko", new BigDecimal("1899.90"), 17, "/images/zara/zara%20kolsuz%20ti%C5%9F%C3%B6rt.jpg", top, zara, supplier);
-        upsertProduct("Asimetrik Kesim Midi Elbise", "ZR-1012", "akiskan kumas", new BigDecimal("2799.90"), 13, "/images/zara/kad%C4%B1n%20a%C3%A7%C4%B1l%C4%B1%C5%9F.jpg", dress, atelier, supplier);
-        upsertProduct("Drapeli Saten Midi Elbise", "ZR-1013", "dokumlu saten", new BigDecimal("3199.90"), 11, "/images/zara/kad%C4%B1n%20a%C3%A7%C4%B1l%C4%B1%C5%9F%202.jpg", dress, edition, supplier);
-        upsertProduct("Minimal Gunluk Bluz", "ZR-1014", "ince pamuk", new BigDecimal("1299.90"), 30, "/images/zara/resim1.jpg", top, atelier, supplier);
-        upsertProduct("Modern Blazer Look", "ZR-1015", "yapili kumas", new BigDecimal("3599.90"), 9, "/images/zara/resim2.jpg", blazer, zara, supplier);
+        upsertProduct("Kemerli Beyaz Midi Elbise", "ZR-1001", "keten karisimli kumas", "M", new BigDecimal("2499.90"), 18, "/images/zara/00387075250-p.jpg", dress, zara, supplier);
+        upsertProduct("Kirmizi Straplez Uzun Elbise", "ZR-1002", "dokumlu viskon", "S", new BigDecimal("3299.90"), 12, "/images/zara/01165458632-p.jpg", dress, edition, supplier);
+        upsertProduct("Cizgili Ince Triko Tunik", "ZR-1003", "pamuklu triko", "L", new BigDecimal("1699.90"), 22, "/images/zara/02142175500-p.jpg", knitwear, atelier, supplier);
+        upsertProduct("Siyah Halter Bluz ve Desenli Sort", "ZR-1004", "saten dokulu kumas", "M", new BigDecimal("1899.90"), 15, "/images/zara/02157023700-p.jpg", top, zara, supplier);
+        upsertProduct("Dokulu Ekose Ceket", "ZR-1005", "tuvit dokulu kumas", "38", new BigDecimal("2799.90"), 11, "/images/zara/02719903084-p.jpg", blazer, edition, supplier);
+        upsertProduct("Oversize Siyah Blazer", "ZR-1006", "yun karisimli kumas", "40", new BigDecimal("3499.90"), 10, "/images/zara/02753122700-p.jpg", blazer, zara, supplier);
+        upsertProduct("Pudra Askili Midi Elbise", "ZR-1007", "akiskan saten", "S", new BigDecimal("2199.90"), 16, "/images/zara/02860342902-p.jpg", dress, atelier, supplier);
+        upsertProduct("Kruvaze Dugmeli Mini Elbise", "ZR-1008", "pamuklu kanvas", "M", new BigDecimal("2599.90"), 14, "/images/zara/02930727052-p.jpg", dress, zara, supplier);
+        upsertProduct("Basic Beyaz Tisort ve Denim", "ZR-1009", "pamuk denim kombin", "L", new BigDecimal("1499.90"), 28, "/images/zara/04424306250-p.jpg", top, atelier, supplier);
+        upsertProduct("Puantiye Desenli Midi Elbise", "ZR-1010", "hafif viskon", "S", new BigDecimal("1999.90"), 19, "/images/zara/05039190300-p.jpg", dress, edition, supplier);
+        upsertProduct("Asimetrik Kapanmali Triko Top", "ZR-1011", "yumusak triko", "M", new BigDecimal("1899.90"), 17, "/images/zara/zara%20kolsuz%20ti%C5%9F%C3%B6rt.jpg", top, zara, supplier);
+        upsertProduct("Asimetrik Kesim Midi Elbise", "ZR-1012", "akiskan kumas", "S", new BigDecimal("2799.90"), 13, "/images/zara/kad%C4%B1n%20a%C3%A7%C4%B1l%C4%B1%C5%9F.jpg", dress, atelier, supplier);
+        upsertProduct("Drapeli Saten Midi Elbise", "ZR-1013", "dokumlu saten", "M", new BigDecimal("3199.90"), 11, "/images/zara/kad%C4%B1n%20a%C3%A7%C4%B1l%C4%B1%C5%9F%202.jpg", dress, edition, supplier);
+        upsertProduct("Minimal Gunluk Bluz", "ZR-1014", "ince pamuk", "L", new BigDecimal("1299.90"), 30, "/images/zara/resim1.jpg", top, atelier, supplier);
+        upsertProduct("Modern Blazer Look", "ZR-1015", "yapili kumas", "42", new BigDecimal("3599.90"), 9, "/images/zara/resim2.jpg", blazer, zara, supplier);
 
         seedCustomers();
         seedDemoOrdersAndPayments();
@@ -224,11 +224,12 @@ public class DataInitializer implements CommandLineRunner {
         return orderRepository.save(order);
     }
 
-    private void upsertProduct(String name, String model, String material, BigDecimal price, int stock, String imageUrl, Category category, Brand brand, Supplier supplier) {
+    private void upsertProduct(String name, String model, String material, String size, BigDecimal price, int stock, String imageUrl, Category category, Brand brand, Supplier supplier) {
         Product product = productRepository.findByModelIgnoreCase(model).orElseGet(Product::new);
         product.setName(name);
         product.setModel(model);
         product.setMaterial(material);
+        product.setSize(size);
         product.setPrice(price);
         product.setStockQuantity(stock);
         product.setImageUrl(imageUrl);
